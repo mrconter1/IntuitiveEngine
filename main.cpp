@@ -11,40 +11,6 @@
 #include "graphics.h"
 #include "screen.h"
 
-#define PI 3.14159265358
-
-const int SCREEN_WIDTH = 1280;
-const int SCREEN_HEIGHT = 720;
-
-//g++ main.cpp player.cpp -I `pkg-config --cflags --libs sdl2` stdc++fs && ./a.out
-
-/*
-
----To Do---
-* Correct movement
-	* Smooth
-	* Multiple Keypresses
-* Fix mirror bug
-* Object Pass by reference
-* Added render time measuring for smoother fps
-* Object rotation
-	* Phi
-	* Theta
-* Camera rotation
-	* Mouse Support
-	* Left-Right
-	* Up-Down
-	Fix invert bug
-	Smooth Movement
-* Split project into modules
-* Change Folder Name to IntuitiveEngine
-Start using Github
-Draw full triangle function
-Z-Buffer implementation
-Optimize
-
-*/
-
 //Custom object
 Object CreateBox(float x, float y, float z, float size) {
 
@@ -119,7 +85,7 @@ int main( int argc, char* args[] )
 	//Draw random scene
 	srand (time(NULL));
 
-	int boxes = 1000;
+	int boxes = 100;
 	Object box[boxes];
 
 	for (int i = 0; i < boxes; i++) {
