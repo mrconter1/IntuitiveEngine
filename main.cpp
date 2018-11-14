@@ -9,6 +9,7 @@
 
 #include "player.h"
 #include "graphics.h"
+#include "scene.h"
 #include "screen.h"
 
 //Custom object

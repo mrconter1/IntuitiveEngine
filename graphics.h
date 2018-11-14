@@ -1,3 +1,6 @@
+#ifndef GRAPHICS_H
+#define GRAPHICS_H
+
 #include <SDL.h>
 #include <list>
 
@@ -41,25 +44,7 @@ class Object {
 	void rotateObject(float x, float y, float z, float thetaAdd, float phiAdd);
 };
 
-class Scene {
-	public:
-		Player * player;
-		Screen * screen;
-		std::list<Object*> objectList;
-		float renderTime;
-
-	//Constructor that takes a pointer to the player instance as paramter
-	Scene(Player * inputPlayer, Screen * inputScreen);
-	void renderScene();
-	//Returns a list with 2d vertex's to render
-	std::list<Triangle> renderQueue();
-	//Add a object that consists of vertices to the scene
-	void addObject(Object * object);
-	//Rotate an object
-	void rotateScene(float thetaAdd, float phiAdd);
-	//Returns render time
-	float getRenderTime();
-};
+#endif
 
 
 
