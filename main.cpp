@@ -123,7 +123,7 @@ int main( int argc, char* args[] )
 			scene.renderScene();
 			
 			//Prints render time
-			printf("Render time: %f\n", scene.getRenderTime());
+			printf("Average render time: %f\n", scene.getAverageRenderTime(60));
 
 		}
 	}
