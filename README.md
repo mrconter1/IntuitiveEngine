@@ -18,5 +18,5 @@ A primitive 3D engine made from the ground up using only a 2D drawLineToScreen f
 
 Command used to run project:
 ```
-g++ main.cpp player.cpp -I `pkg-config --cflags --libs sdl2` stdc++fs && ./a.out
+g++ main.cpp player.cpp graphics.cpp screen.cpp scene.cpp -I `pkg-config --cflags --libs sdl2` -lstdc++fs && ./a.out
 ```
