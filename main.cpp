@@ -1,11 +1,6 @@
 #include <SDL.h>
 #include <stdio.h>
 #include <string>
-#include <cmath>
-#include <list>
-#include <vector>
-#include <array>
-#include <chrono>
 
 #include "player.h"
 #include "graphics.h"

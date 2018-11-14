@@ -5,7 +5,10 @@
 #define PI 3.14159265358	
 
 Player::Player(Screen * inputScreen) {
+	//Pointer to screen
 	screen = inputScreen;
+
+	//Player Values
 	x = y = z = xSpeed = ySpeed = zSpeed = 0;
 	hFov = PI/4;
 	vFov = hFov*(((float) screen->SCREEN_HEIGHT)/((float) screen->SCREEN_WIDTH));

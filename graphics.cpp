@@ -1,7 +1,6 @@
 #include <SDL.h>
 #include <list>
 #include <cmath>
-#include <chrono>
 #include "player.h"
 #include "graphics.h"
 

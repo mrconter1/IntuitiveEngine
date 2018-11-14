@@ -1,8 +1,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <cmath>
-#include <string>
 #include "screen.h"
 
 class Player {
