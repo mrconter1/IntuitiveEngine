@@ -12,8 +12,8 @@ A primitive 3D engine made from the ground up using only a 2D drawLineToScreen f
 - [x] Mouse Support
 - [x] Split project into modules
 - [x] Start using Github
-- [ ] Use one big list containing all 2d lines to render instead of separate 2d triangle instances
-- [ ] Object Spatial Properties
+- [x] Object Spatial Properties
+- [ ] One list for all 2d lines instead of separate 2d triangle instances
 - [ ] Object Rotational Properties
 - [ ] Draw full triangle function
 - [ ] Z-Buffer implementation
