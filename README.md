@@ -1,5 +1,5 @@
 # IntuitiveEngine
-A primitive 3D engine made from the ground up using only a 2D drawLineToScreen function.
+A primitive 3D engine made from the ground up using only a 2D drawLineToScreen function. It can at the moment project around 10 000 points to the screen using the CPU at 60 FPS.
 
 - [x] Correct XYZ movement
 - [x] Smooth Mouse input
