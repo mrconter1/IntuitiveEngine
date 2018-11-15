@@ -22,18 +22,19 @@ void Triangle::addPoint(int x, int y) {
 }
 
 void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
-	int x[3];
-	int y[3];
+	
+	SDL_Point points[4];
 	int i = 0;
 	for (std::list<Point>::iterator pointIt = pointList.begin(); pointIt != pointList.end(); ++pointIt){
-		x[i] = pointIt->screenX;
-		y[i] = pointIt->screenY;
+		if (i == 0) {
+			points[0] = {pointIt->screenX, pointIt->screenY};
+			points[3] = {pointIt->screenX, pointIt->screenY};
+		} else {
+			points[i] = {pointIt->screenX, pointIt->screenY};
+		}
 		i++;
 	}
-		
-	SDL_RenderDrawLine(gRenderer, x[0], y[0], x[1], y[1]);
-	SDL_RenderDrawLine(gRenderer, x[0], y[0], x[2], y[2]);
-	SDL_RenderDrawLine(gRenderer, x[1], y[1], x[2], y[2]);
+	SDL_RenderDrawLines(gRenderer, points, 4);
 
 }
 
@@ -49,6 +50,9 @@ Object::Object() {
 	x = 0.0f;
 	y = 0.0f;
 	z = 0.0f;
+
+	phiAngle = 0.0f;
+	thetaAngle = 0.0f;
 }
 
 //Retrieves three 3d points in form of array lists

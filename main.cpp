@@ -70,7 +70,7 @@ int main( int argc, char* args[] )
 {
 
 	//Screen instance
-	Screen screen(1920, 1080, 60);
+	Screen screen(1280, 720, 60);
 
 	//Creates player instance
 	Player player(&screen);
@@ -81,14 +81,18 @@ int main( int argc, char* args[] )
 	//Draw random scene
 	srand (time(NULL));
 
-	int boxes = 10;
-	Object box[boxes];
+	int boxes = 7;
+	Object box[boxes][boxes][boxes];
 
-	for (int i = 0; i < boxes; i++) {
-		box[i] = CreateBox(i, 0, 0, 1);
-		scene.addObject(&box[i]);
+	for (int x = 0; x < boxes; x++) {
+		for (int y = 0; y < boxes; y++) {
+			for (int z = 0; z < boxes; z++) {
+				box[x][y][z] = CreateBox(x, y, z, 1);
+				scene.addObject(&box[x][y][z]);
+			}
+		}
 	}
-
+	
 	//Start up SDL and create window
 	if(!screen.init())
 	{
@@ -118,12 +122,9 @@ int main( int argc, char* args[] )
 
 			//Render scene
 			scene.renderScene();
-			
-			box[0].x += 0.01f;
 
-			printf("X: %f\n", box[0].x);	
 			//Prints render time
-			printf("Average render time: %f\n", scene.getAverageRenderTime(60));
+			printf("Average render time: %f\n", scene.getAverageRenderTime(120));
 
 		}
 	}

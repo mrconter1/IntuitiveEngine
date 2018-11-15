@@ -38,9 +38,9 @@ class Object {
 		std::list<Vertex> vertexList;
 		int isVisible;
 		float x, y, z;
+		float phiAngle, thetaAngle;
 
 	Object();
-	Object(float inputX, float inputY, float inputZ);
 
 	//Retrieves three 3d points in form of array lists
 	void addVertex(std::initializer_list<float> pointA, std::initializer_list<float> pointB, std::initializer_list<float> pointC);
