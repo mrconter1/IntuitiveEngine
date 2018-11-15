@@ -70,7 +70,7 @@ int main( int argc, char* args[] )
 {
 
 	//Screen instance
-	Screen screen(1280, 720, 60);
+	Screen screen(1920, 1080, 60);
 
 	//Creates player instance
 	Player player(&screen);
@@ -81,14 +81,11 @@ int main( int argc, char* args[] )
 	//Draw random scene
 	srand (time(NULL));
 
-	int boxes = 100;
+	int boxes = 10;
 	Object box[boxes];
 
 	for (int i = 0; i < boxes; i++) {
-		int x = rand() % 10;
-		int y = rand() % 10 - 15;
-		int z = rand() % 2 - 2;
-		box[i] = CreateBox(x, y, z, 1);
+		box[i] = CreateBox(i, 0, 0, 1);
 		scene.addObject(&box[i]);
 	}
 
@@ -122,6 +119,9 @@ int main( int argc, char* args[] )
 			//Render scene
 			scene.renderScene();
 			
+			box[0].x += 0.01f;
+
+			printf("X: %f\n", box[0].x);	
 			//Prints render time
 			printf("Average render time: %f\n", scene.getAverageRenderTime(60));
 

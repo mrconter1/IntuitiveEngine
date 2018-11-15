@@ -44,7 +44,7 @@ bool Screen::init()
 		}
 		else
 		{
-			//SDL_SetWindowFullscreen(gWindow, 1);
+			SDL_SetWindowFullscreen(gWindow, 1);
 			SDL_ShowCursor(SDL_DISABLE);
 
 			//Create renderer for window

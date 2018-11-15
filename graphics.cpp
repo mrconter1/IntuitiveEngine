@@ -45,6 +45,12 @@ Vertex::Vertex(std::initializer_list<float> pointA, std::initializer_list<float>
 }
 
 //-----Object Class-----
+Object::Object() {
+	x = 0.0f;
+	y = 0.0f;
+	z = 0.0f;
+}
+
 //Retrieves three 3d points in form of array lists
 void Object::addVertex(std::initializer_list<float> pointA, std::initializer_list<float> pointB, std::initializer_list<float> pointC) {
 	vertexList.push_back(Vertex(pointA, pointB, pointC));
