@@ -13,7 +13,7 @@ A primitive 3D engine made from the ground up using only a 2D drawLineToScreen f
 - [x] Split project into modules
 - [x] Start using Github
 - [x] Object Spatial Properties
-- [ ] One list for all 2d lines instead of separate 2d triangle instances
+- [x] One draw call for each triangle
 - [ ] Object Rotational Properties
 - [ ] Draw full triangle function
 - [ ] Z-Buffer implementation
