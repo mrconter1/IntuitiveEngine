@@ -23,6 +23,10 @@ void Triangle::addPoint(int x, int y) {
 
 void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
 	
+	int x[3];
+	int y[3];
+
+	//Outline triangle	
 	SDL_Point points[4];
 	int i = 0;
 	for (std::list<Point>::iterator pointIt = pointList.begin(); pointIt != pointList.end(); ++pointIt){
@@ -32,10 +36,75 @@ void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
 		} else {
 			points[i] = {pointIt->screenX, pointIt->screenY};
 		}
+		x[i] = pointIt->screenX;
+		y[i] = pointIt->screenY;
 		i++;
 	}
+
 	SDL_RenderDrawLines(gRenderer, points, 4);
 
+	//Fill triangle
+	int numOfPoints = 0;
+	std::list<Point> linePointList;
+
+	float angleA = atan2(y[0] - y[1], x[0] - x[1]);
+	float angleB = atan2(y[0] - y[2], x[0] - x[2]);
+
+	float cAngleA = cos(angleA);
+	float sAngleA = sin(angleA);
+
+	float cAngleB = cos(angleB);
+	float sAngleB = sin(angleB);
+
+	int doneA = 0;
+	int doneB = 0;
+
+	float xA, yA, xB, yB;
+	
+	float radius = 0.0f;	
+	while (!doneA || !doneB) {
+
+		if (!doneA) {
+			xA = radius * cAngleA + x[1];
+			yA = radius * sAngleA + y[1];
+		}
+
+		if (!doneB) {
+			xB = radius * cAngleB + x[2];
+			yB = radius * sAngleB + y[2];
+		}
+
+		if (doneA == 0 && sqrt(pow(xA  - x[0], 2)) < 2.0f && sqrt(pow(yA  - y[0], 2)) < 2.0f) {
+			doneA = 1;
+		} else {
+			if (!doneA) {
+				linePointList.push_back(Point(xA, yA));
+				numOfPoints++;
+			}
+		}
+
+		if (doneB == 0 && sqrt(pow(xB  - x[0], 2)) < 2.0f && sqrt(pow(yB  - y[0], 2)) < 2.0f) {
+			doneB = 1;
+		} else {
+			if (!doneB) {
+				linePointList.push_back(Point(xB, yB));
+				numOfPoints++;
+			}
+		}
+
+		radius += 0.5f;
+
+	}
+
+	SDL_Point linePoints[numOfPoints];
+	int j = 0;
+	for (std::list<Point>::iterator pointIt = linePointList.begin(); pointIt != linePointList.end(); ++pointIt){
+		linePoints[j] = {pointIt->screenX, pointIt->screenY};
+		j++;
+	}
+
+	SDL_RenderDrawLines(gRenderer, linePoints, numOfPoints);
+	
 }
 
 //-----Vertex Class-----
