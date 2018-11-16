@@ -45,67 +45,76 @@ void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
 
 	SDL_RenderDrawLines(gRenderer, points, 4);
 
-	//Fill triangle
-	int numOfPoints = 0;
-	std::list<Point> linePointList;
+	if (solid) {
 
-	float angleA = atan2(y[0] - y[1], x[0] - x[1]);
-	float angleB = atan2(y[0] - y[2], x[0] - x[2]);
+		//Fill triangle
+		int numOfPoints = 0;
+		std::list<Point> linePointList;
 
-	float cAngleA = cos(angleA);
-	float sAngleA = sin(angleA);
+		//Calculate angle between point A and B and between A and C
+		float angleA = atan2(y[0] - y[1], x[0] - x[1]);
+		float angleB = atan2(y[0] - y[2], x[0] - x[2]);
 
-	float cAngleB = cos(angleB);
-	float sAngleB = sin(angleB);
+		//Calculate angles
+		float cAngleA = cos(angleA);
+		float sAngleA = sin(angleA);
 
-	int doneA = 0;
-	int doneB = 0;
+		float cAngleB = cos(angleB);
+		float sAngleB = sin(angleB);
 
-	float xA, yA, xB, yB;
-	
-	float radius = 0.0f;	
-	while (!doneA || !doneB) {
+		//Flags to toggle when reaching target coordinates
+		int doneA = 0;
+		int doneB = 0;
 
-		if (!doneA) {
-			xA = radius * cAngleA + x[1];
-			yA = radius * sAngleA + y[1];
-		}
+		float xA, yA, xB, yB;
+		
+		float radius = 0.0f;	
+		while (!doneA || !doneB) {
 
-		if (!doneB) {
-			xB = radius * cAngleB + x[2];
-			yB = radius * sAngleB + y[2];
-		}
-
-		if (doneA == 0 && sqrt(pow(xA  - x[0], 2)) < 2.0f && sqrt(pow(yA  - y[0], 2)) < 2.0f) {
-			doneA = 1;
-		} else {
+			//Calculate coordinates if job not done
 			if (!doneA) {
-				linePointList.push_back(Point(xA, yA));
-				numOfPoints++;
+				xA = radius * cAngleA + x[1];
+				yA = radius * sAngleA + y[1];
 			}
-		}
 
-		if (doneB == 0 && sqrt(pow(xB  - x[0], 2)) < 2.0f && sqrt(pow(yB  - y[0], 2)) < 2.0f) {
-			doneB = 1;
-		} else {
 			if (!doneB) {
-				linePointList.push_back(Point(xB, yB));
-				numOfPoints++;
+				xB = radius * cAngleB + x[2];
+				yB = radius * sAngleB + y[2];
 			}
+
+			//If target is not reached, calculate coordinate and add to list
+			if (doneA == 0 && sqrt(pow(xA  - x[0], 2)) < 2.0f && sqrt(pow(yA  - y[0], 2)) < 2.0f) {
+				doneA = 1;
+			} else {
+				if (!doneA) {
+					linePointList.push_back(Point(xA, yA));
+					numOfPoints++;
+				}
+			}
+
+			if (doneB == 0 && sqrt(pow(xB  - x[0], 2)) < 2.0f && sqrt(pow(yB  - y[0], 2)) < 2.0f) {
+				doneB = 1;
+			} else {
+				if (!doneB) {
+					linePointList.push_back(Point(xB, yB));
+					numOfPoints++;
+				}
+			}
+
+			radius += 1.0f;
+
 		}
 
-		radius += 1.0f;
+		SDL_Point linePoints[numOfPoints];
+		int j = 0;
+		for (std::list<Point>::iterator pointIt = linePointList.begin(); pointIt != linePointList.end(); ++pointIt){
+			linePoints[j] = {pointIt->screenX, pointIt->screenY};
+			j++;
+		}
+
+		SDL_RenderDrawLines(gRenderer, linePoints, numOfPoints);
 
 	}
-
-	SDL_Point linePoints[numOfPoints];
-	int j = 0;
-	for (std::list<Point>::iterator pointIt = linePointList.begin(); pointIt != linePointList.end(); ++pointIt){
-		linePoints[j] = {pointIt->screenX, pointIt->screenY};
-		j++;
-	}
-
-	SDL_RenderDrawLines(gRenderer, linePoints, numOfPoints);
 	
 }
 
@@ -131,6 +140,7 @@ Object::Object() {
 	alpha = 255;
 
 	solid = 1;
+	visible = 1;
 }
 
 //Retrieves three 3d points in form of array lists
@@ -202,6 +212,11 @@ void Object::setAlpha(int inputA) {
 //Update object color
 void Object::setSolid(int inputVal) {
 	solid = inputVal;
+}
+
+//Update object color
+void Object::setVisible(int inputVal) {
+	visible = inputVal;
 }
 
 

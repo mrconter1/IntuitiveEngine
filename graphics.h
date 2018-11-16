@@ -18,6 +18,7 @@ class Point {
 class Triangle {
 	public:
 		std::list<Point> pointList;
+		float dist;
 		int color[3];
 		int alpha;
 		int solid;
@@ -44,6 +45,7 @@ class Object {
 		float phiAngle, thetaAngle;
 		int colorR, colorG, colorB, alpha;
 		int solid;
+		int visible;
 
 	Object();
 
@@ -57,6 +59,8 @@ class Object {
 	void setAlpha(int inputA);
 	//Set object alpha
 	void setSolid(int inputVal);
+	//Set visibility
+	void setVisible(int inputVal);
 	
 };
 
