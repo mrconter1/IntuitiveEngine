@@ -46,6 +46,7 @@ class Object {
 		int colorR, colorG, colorB, alpha;
 		int solid;
 		int visible;
+		int cX, cY, cZ;
 
 	Object();
 

@@ -81,7 +81,7 @@ int main( int argc, char* args[] )
 	//Draw random scene
 	srand (time(NULL));
 
-	int boxes = 10;
+	int boxes = 25;
 	Object box[boxes][boxes][boxes];
 
 	for (int x = 0; x < boxes; x++) {

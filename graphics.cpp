@@ -144,6 +144,28 @@ Object::Object() {
 //Retrieves three 3d points in form of array lists
 void Object::addVertex(std::initializer_list<float> pointA, std::initializer_list<float> pointB, std::initializer_list<float> pointC) {
 	vertexList.push_back(Vertex(pointA, pointB, pointC));
+
+	int pointCount = 0;
+	//Find center of object
+	for (auto &vertex : vertexList) {
+			//Three points for each vertex
+			std::list<Point> &pointList = vertex.pointList;
+			for (auto &point : pointList) {
+				
+				cX += point.x;
+				cY += point.y;
+				cZ += point.z;
+				
+				pointCount++;
+			}				
+	}
+
+	//Add average point
+	if (pointCount > 0) {
+		cX /= pointCount;
+		cY /= pointCount;
+		cZ /= pointCount;
+	}
 }
 
 //Rotate an object
