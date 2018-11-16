@@ -18,6 +18,7 @@ A primitive 3D engine made from the ground up using only a 2D drawLineToScreen f
 - [x] Object Spatial, Solid, Visibility and Color properties
 - [x] Z-Buffer implementation
 - [ ] Optimize Rendering
+- [ ] Primitive Object Shadowing
 - [ ] Object Rotational Properties
 - [ ] Add more objects to graphics library
 
