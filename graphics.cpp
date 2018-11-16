@@ -75,27 +75,25 @@ void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
 			if (!doneA) {
 				xA = radius * cAngleA + x[1];
 				yA = radius * sAngleA + y[1];
+
+				//If target is not reached, calculate coordinate and add to list
+				if (abs(xA  - x[0]) < 2 && abs(yA  - y[0]) < 2) {
+					doneA = 1;
+				} else {
+					linePointList.push_back(Point(xA, yA));
+					numOfPoints++;
+				}
+				
 			}
 
 			if (!doneB) {
 				xB = radius * cAngleB + x[2];
 				yB = radius * sAngleB + y[2];
-			}
 
-			//If target is not reached, calculate coordinate and add to list
-			if (doneA == 0 && sqrt(pow(xA  - x[0], 2)) < 2.0f && sqrt(pow(yA  - y[0], 2)) < 2.0f) {
-				doneA = 1;
-			} else {
-				if (!doneA) {
-					linePointList.push_back(Point(xA, yA));
-					numOfPoints++;
-				}
-			}
-
-			if (doneB == 0 && sqrt(pow(xB  - x[0], 2)) < 2.0f && sqrt(pow(yB  - y[0], 2)) < 2.0f) {
-				doneB = 1;
-			} else {
-				if (!doneB) {
+				//If target is not reached, calculate coordinate and add to list
+				if (abs(xB  - x[0]) < 2 && abs(yB  - y[0]) < 2) {
+					doneB = 1;
+				} else {
 					linePointList.push_back(Point(xB, yB));
 					numOfPoints++;
 				}

@@ -81,13 +81,13 @@ int main( int argc, char* args[] )
 	//Draw random scene
 	srand (time(NULL));
 
-	int boxes = 2;
+	int boxes = 10;
 	Object box[boxes][boxes][boxes];
 
 	for (int x = 0; x < boxes; x++) {
 		for (int y = 0; y < boxes; y++) {
 			for (int z = 0; z < boxes; z++) {
-				box[x][y][z] = CreateBox(x + rand() % 10, y + rand() % 10, z + rand() % 10, 1);
+				box[x][y][z] = CreateBox(x + rand() % boxes*2, y + rand() % boxes*2, z + rand() % boxes*2, 1);
 				box[x][y][z].setColor(rand() % 256, rand() % 256, rand() % 256);
 				scene.addObject(&box[x][y][z]);
 			}
@@ -125,7 +125,7 @@ int main( int argc, char* args[] )
 			scene.renderScene();
 
 			//Prints render time
-			printf("Average render time: %f\n", scene.getAverageRenderTime(120));
+			printf("Render time: %f\n", scene.getRenderTime());
 
 		}
 	}
