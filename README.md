@@ -15,9 +15,9 @@ A primitive 3D engine made from the ground up using only a 2D drawLineToScreen f
 - [x] Object Spatial Properties
 - [x] One draw call for each triangle
 - [ ] Draw full triangle function
+- [ ] Z-Buffer implementation
 - [ ] Object Color Property
 - [ ] Object Rotational Properties
-- [ ] Z-Buffer implementation
 - [ ] Add more objects to graphics library
 
 Command used to run project:
