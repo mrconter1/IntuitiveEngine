@@ -87,7 +87,8 @@ int main( int argc, char* args[] )
 	for (int x = 0; x < boxes; x++) {
 		for (int y = 0; y < boxes; y++) {
 			for (int z = 0; z < boxes; z++) {
-				box[x][y][z] = CreateBox(x, y, z, 1);
+				box[x][y][z] = CreateBox(x + rand() % 10, y + rand() % 10, z + rand() % 10, 1);
+				box[x][y][z].setColor(rand() % 256, rand() % 256, rand() % 256);
 				scene.addObject(&box[x][y][z]);
 			}
 		}

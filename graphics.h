@@ -18,6 +18,9 @@ class Point {
 class Triangle {
 	public:
 		std::list<Point> pointList;
+		int color[3];
+		int alpha;
+		int solid;
 	
 	void addPoint(int x, int y);
 	//Draw line to surface
@@ -39,6 +42,8 @@ class Object {
 		int isVisible;
 		float x, y, z;
 		float phiAngle, thetaAngle;
+		int colorR, colorG, colorB, alpha;
+		int solid;
 
 	Object();
 
@@ -46,6 +51,13 @@ class Object {
 	void addVertex(std::initializer_list<float> pointA, std::initializer_list<float> pointB, std::initializer_list<float> pointC);
 	//Rotate an object
 	void rotateObject(float x, float y, float z, float thetaAdd, float phiAdd);
+	//Set object color
+	void setColor(int inputR, int inputG, int inputB);
+	//Set object alpha
+	void setAlpha(int inputA);
+	//Set object alpha
+	void setSolid(int inputVal);
+	
 };
 
 #endif

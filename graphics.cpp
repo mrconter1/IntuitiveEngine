@@ -22,6 +22,8 @@ void Triangle::addPoint(int x, int y) {
 }
 
 void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
+
+	SDL_SetRenderDrawColor(gRenderer, color[0], color[1], color[2], alpha); 
 	
 	int x[3];
 	int y[3];
@@ -92,7 +94,7 @@ void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
 			}
 		}
 
-		radius += 0.5f;
+		radius += 1.0f;
 
 	}
 
@@ -122,6 +124,13 @@ Object::Object() {
 
 	phiAngle = 0.0f;
 	thetaAngle = 0.0f;
+
+	colorR = 255;
+	colorG = 255;
+	colorB = 255;
+	alpha = 255;
+
+	solid = 1;
 }
 
 //Retrieves three 3d points in form of array lists
@@ -175,6 +184,24 @@ void Object::rotateObject(float x, float y, float z, float thetaAdd, float phiAd
 
 		}				
 	}
+}
+
+//Update object color
+void Object::setColor(int inputR, int inputG, int inputB) {
+	colorR = inputR;
+	colorG = inputG;
+	colorB = inputB;
+}
+
+//Update object color
+void Object::setAlpha(int inputA) {
+	alpha = inputA;
+}
+
+
+//Update object color
+void Object::setSolid(int inputVal) {
+	solid = inputVal;
 }
 
 
