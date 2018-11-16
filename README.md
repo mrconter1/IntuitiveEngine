@@ -12,7 +12,6 @@ A primitive 3D engine made from the ground up using only a 2D drawLineToScreen f
 - [x] Mouse Support
 - [x] Split project into modules
 - [x] Start using Github
-- [x] Object Spatial Properties
 - [x] One draw call for each triangle
 - [x] Draw full triangle function
 - [x] Object Spatial, Solid, Visibility and Color properties
