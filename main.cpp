@@ -81,14 +81,14 @@ int main( int argc, char* args[] )
 	//Draw random scene
 	srand (time(NULL));
 
-	int boxes = 25;
+	int boxes = 1;
 	Object box[boxes][boxes][boxes];
 
 	for (int x = 0; x < boxes; x++) {
 		for (int y = 0; y < boxes; y++) {
 			for (int z = 0; z < boxes; z++) {
-				box[x][y][z] = CreateBox(x + rand() % boxes*2, y + rand() % boxes*2, z + rand() % boxes*2, 1);
-				box[x][y][z].setColor(rand() % 256, rand() % 256, rand() % 256);
+				box[x][y][z] = CreateBox(1, 1, 1, 1);
+				box[x][y][z].setColor(200, 0, 0);	
 				scene.addObject(&box[x][y][z]);
 			}
 		}

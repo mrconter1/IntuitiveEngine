@@ -31,15 +31,15 @@ void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
 	//Outline triangle	
 	SDL_Point points[4];
 	int i = 0;
-	for (std::list<Point>::iterator pointIt = pointList.begin(); pointIt != pointList.end(); ++pointIt){
+	for (auto &point : pointList){
 		if (i == 0) {
-			points[0] = {pointIt->screenX, pointIt->screenY};
-			points[3] = {pointIt->screenX, pointIt->screenY};
+			points[0] = {point.screenX, point.screenY};
+			points[3] = {point.screenX, point.screenY};
 		} else {
-			points[i] = {pointIt->screenX, pointIt->screenY};
+			points[i] = {point.screenX, point.screenY};
 		}
-		x[i] = pointIt->screenX;
-		y[i] = pointIt->screenY;
+		x[i] = point.screenX;
+		y[i] = point.screenY;
 		i++;
 	}
 
@@ -105,8 +105,8 @@ void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
 
 		SDL_Point linePoints[numOfPoints];
 		int j = 0;
-		for (std::list<Point>::iterator pointIt = linePointList.begin(); pointIt != linePointList.end(); ++pointIt){
-			linePoints[j] = {pointIt->screenX, pointIt->screenY};
+		for (auto &point : linePointList){
+			linePoints[j] = {point.screenX, point.screenY};
 			j++;
 		}
 
@@ -148,6 +148,11 @@ void Object::addVertex(std::initializer_list<float> pointA, std::initializer_lis
 	int pointCount = 0;
 	//Find center of object
 	for (auto &vertex : vertexList) {
+
+			//To hold phi and angle relative to origo for each point
+			float phi[3], theta[3];
+			int index = 0;
+
 			//Three points for each vertex
 			std::list<Point> &pointList = vertex.pointList;
 			for (auto &point : pointList) {
@@ -156,8 +161,31 @@ void Object::addVertex(std::initializer_list<float> pointA, std::initializer_lis
 				cY += point.y;
 				cZ += point.z;
 				
+				//Calculate angle
+				float r = sqrt(pow(point.x, 2) + pow(point.y, 2) + pow(point.z, 2));
+				phi[index] = atan2(point.y, point.x);
+				printf("index: %d\n", index);
+				if (r > 0) {
+					theta[index] = acos(point.z/r);
+				} else {
+					theta[index] = 0.0f;
+				}
+			
 				pointCount++;
-			}				
+				index++;
+			}	
+
+			float angleAB = atan2(theta[1] - theta[0], phi[1] - phi[0]); 
+			float angleAC = atan2(theta[2] - theta[0], phi[2] - phi[0]); 
+
+			float angleBA = atan2(theta[0] - theta[1], phi[0] - phi[1]); 
+			float angleBC = atan2(theta[2] - theta[1], phi[2] - phi[1]);	
+
+			float middleA = (angleAB + angleAC)/2;
+			float middleB = (angleBA + angleBC)/2;
+			
+									
+			
 	}
 
 	//Add average point
@@ -166,6 +194,7 @@ void Object::addVertex(std::initializer_list<float> pointA, std::initializer_lis
 		cY /= pointCount;
 		cZ /= pointCount;
 	}
+
 }
 
 //Rotate an object

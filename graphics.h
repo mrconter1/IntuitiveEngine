@@ -17,7 +17,10 @@ class Point {
 
 class Triangle {
 	public:
+
+		int size;
 		std::list<Point> pointList;
+
 		float dist;
 		int color[3];
 		int alpha;
@@ -31,6 +34,8 @@ class Triangle {
 class Vertex {
 	public:
 		std::list<Point> pointList;
+		//Triangle angle
+		float phi, theta;
 
 	//Initilize a vertex with three points
 	Vertex(std::initializer_list<float> pointA, std::initializer_list<float> pointB, std::initializer_list<float> pointC);
