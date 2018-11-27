@@ -26,3 +26,5 @@ Command used to run project:
 ```
 g++ main.cpp player.cpp graphics.cpp screen.cpp scene.cpp -I `pkg-config --cflags --libs sdl2` -lstdc++fs && ./a.out
 ```
+Gameplay:
+![](game.gif)
