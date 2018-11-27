@@ -60,7 +60,12 @@ void Scene::renderScene() {
 } 
 
 float Scene::getDistToPlayer(Object * inputObject) {
-	return sqrt(pow(player->x - inputObject->cX, 2) + pow(player->y - inputObject->cY, 2) + pow(player->z - inputObject->cZ, 2));
+	float dist = 10;
+	float x = player->x + dist * sin(player->thetaAngle) * cos(player->phiAngle);
+	float y = player->y + dist * sin(player->thetaAngle) * sin(player->phiAngle);
+	float z = player->z + dist * cos(player->thetaAngle);
+
+	return sqrt(pow(x - inputObject->centerX, 2) + pow(y - inputObject->centerY, 2) + pow(z - inputObject->centerZ, 2));
 }
 
 //Returns a list with 2d vertex's to render
@@ -98,11 +103,6 @@ std::list<Triangle> Scene::renderQueue() {
 			Triangle triangle;
 			//Is inside view
 			int pointsInsideView = 0;
-			//To find triangle center
-			float cX, cY, cZ = 0;
-
-			float x[3], y[3], z[3];
-			int i = 0;
 
 			for (auto &point : pointList) {
 
@@ -110,12 +110,7 @@ std::list<Triangle> Scene::renderQueue() {
 
 				float pointX = point.x + object->x;
 				float pointY = point.y + object->y;
-				float pointZ = point.z + object->z;
-
-				x[i] = pointX;
-				y[i] = pointY;
-				z[i] = pointZ;				
-				i++;
+				float pointZ = point.z + object->z;		
 
 				//-----Camera ROTATION--------
 
@@ -162,17 +157,18 @@ std::list<Triangle> Scene::renderQueue() {
 				float yDist = pointY - player->y;
 				float zDist = pointZ - player->z;
 
-				distAvg += sqrt(pow(xDist, 2) + pow(yDist, 2) + pow(zDist, 2));
+				distAvg += pow(xDist, 2) + pow(yDist, 2) + pow(zDist, 2);
 
 				float xFovPos = 0.0f;
 				float yFovPos = 0.0f;
 				//Project point
 				if (xDist != 0) {
-					xFovPos = atan2(yDist, pointX - player->x);
-					yFovPos = atan2(zDist, pointX - player->x);
+					xFovPos = atan2(yDist, xDist);
+					yFovPos = atan2(zDist, xDist);
 				}
 				int screenPosX = (xFovPos + halfHFov)*hFovTimesScreen_WIDTH;
 				int screenPosY = (yFovPos + halfVFov)*vFovTimesScreen_HEIGHT;
+
 				triangle.addPoint(screenPosX, screenPosY);				
 
 				//Checks if point is inside view
@@ -190,10 +186,23 @@ std::list<Triangle> Scene::renderQueue() {
 			//If whole triangle is visible
 			if (pointsInsideView == 3) {
 
+				float modVal = PI/4;
+				//Alternative 2 as a function of triangle angle
+				float sphereDist = sqrt(pow(fmod(player->phiAngle, modVal) - fmod(vertex.phi, modVal), 2) + pow(fmod(player->thetaAngle, modVal) - fmod(vertex.theta, modVal), 2))/(2*PI);
+
+				//Test
+				if (sphereDist < 0) {
+					sphereDist = 0;
+				} else if (sphereDist > 1) {
+					sphereDist = 1;
+				} 
+
+				float factor = 0.6 + 0.4 * sphereDist;
+
 				//Set triangle color and alpha
-				triangle.color[0] = (int) (object->colorR);
-				triangle.color[1] = (int) (object->colorG);
-				triangle.color[2] = (int) (object->colorB);
+				triangle.color[0] = (int) (object->colorR*factor);
+				triangle.color[1] = (int) (object->colorG*factor);
+				triangle.color[2] = (int) (object->colorB*factor);
 				triangle.alpha = object->alpha;
 				triangle.solid = object->solid;
 				triangle.dist = distAvg;			

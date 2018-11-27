@@ -4,6 +4,8 @@
 #include "player.h"
 #include "graphics.h"
 
+#define PI 3.14159265358	
+
 //-----Point Class-----
 Point::Point(float inputX, float inputY, float inputZ) {
 	x = inputX;
@@ -29,27 +31,33 @@ void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
 	int y[3];
 
 	//Outline triangle	
-	SDL_Point points[4];
 	int i = 0;
 	for (auto &point : pointList){
-		if (i == 0) {
-			points[0] = {point.screenX, point.screenY};
-			points[3] = {point.screenX, point.screenY};
-		} else {
-			points[i] = {point.screenX, point.screenY};
-		}
 		x[i] = point.screenX;
 		y[i] = point.screenY;
 		i++;
 	}
 
-	SDL_RenderDrawLines(gRenderer, points, 4);
+	if (!solid) {
 
-	if (solid) {
+		SDL_Point points[4];
+		int i = 0;
+		for (auto &point : pointList){
+			if (i == 0) {
+				points[0] = {point.screenX, point.screenY};
+				points[3] = {point.screenX, point.screenY};
+			} else {
+				points[i] = {point.screenX, point.screenY};
+			}
+			i++;
+		}
+
+		SDL_RenderDrawLines(gRenderer, points, 4);
+
+	} else {
 
 		//Fill triangle
 		int numOfPoints = 0;
-		std::list<Point> linePointList;
 
 		//Calculate angle between point A and B and between A and C
 		float angleA = atan2(y[0] - y[1], x[0] - x[1]);
@@ -67,6 +75,9 @@ void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
 		int doneB = 0;
 
 		float xA, yA, xB, yB;
+
+		int buffSize = 5000;
+		SDL_Point linePoints[buffSize];
 		
 		float radius = 0.0f;	
 		while (!doneA || !doneB) {
@@ -77,11 +88,13 @@ void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
 				yA = radius * sAngleA + y[1];
 
 				//If target is not reached, calculate coordinate and add to list
-				if (abs(xA  - x[0]) < 2 && abs(yA  - y[0]) < 2) {
+				if (abs(xA  - x[0]) < 1 && abs(yA  - y[0]) < 1) {
 					doneA = 1;
 				} else {
-					linePointList.push_back(Point(xA, yA));
-					numOfPoints++;
+					linePoints[numOfPoints] = {(int) xA, (int) yA};
+					if (numOfPoints < buffSize) {
+						numOfPoints++;
+					}
 				}
 				
 			}
@@ -91,23 +104,18 @@ void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
 				yB = radius * sAngleB + y[2];
 
 				//If target is not reached, calculate coordinate and add to list
-				if (abs(xB  - x[0]) < 2 && abs(yB  - y[0]) < 2) {
+				if (abs(xB  - x[0]) < 1 && abs(yB  - y[0]) < 1) {
 					doneB = 1;
 				} else {
-					linePointList.push_back(Point(xB, yB));
-					numOfPoints++;
+					linePoints[numOfPoints] = {(int) xB, (int) yB};
+					if (numOfPoints < buffSize) {
+						numOfPoints++;
+					}
 				}
 			}
 
-			radius += 1.0f;
+			radius += 0.5f;
 
-		}
-
-		SDL_Point linePoints[numOfPoints];
-		int j = 0;
-		for (auto &point : linePointList){
-			linePoints[j] = {point.screenX, point.screenY};
-			j++;
 		}
 
 		SDL_RenderDrawLines(gRenderer, linePoints, numOfPoints);
@@ -139,6 +147,11 @@ Object::Object() {
 
 	solid = 1;
 	visible = 1;
+
+	objectPointCount = 0;
+	cX = 0;
+	cY = 0;
+	cZ = 0;
 }
 
 //Retrieves three 3d points in form of array lists
@@ -150,51 +163,52 @@ void Object::addVertex(std::initializer_list<float> pointA, std::initializer_lis
 	for (auto &vertex : vertexList) {
 
 			//To hold phi and angle relative to origo for each point
-			float phi[3], theta[3];
+			float x[3], y[3], z[3];
 			int index = 0;
 
 			//Three points for each vertex
 			std::list<Point> &pointList = vertex.pointList;
 			for (auto &point : pointList) {
 				
+				x[index] = point.x;
+				y[index] = point.y;
+				z[index] = point.z;
+
 				cX += point.x;
 				cY += point.y;
 				cZ += point.z;
-				
-				//Calculate angle
-				float r = sqrt(pow(point.x, 2) + pow(point.y, 2) + pow(point.z, 2));
-				phi[index] = atan2(point.y, point.x);
-				printf("index: %d\n", index);
-				if (r > 0) {
-					theta[index] = acos(point.z/r);
-				} else {
-					theta[index] = 0.0f;
-				}
+				objectPointCount++;
 			
 				pointCount++;
 				index++;
 			}	
 
-			float angleAB = atan2(theta[1] - theta[0], phi[1] - phi[0]); 
-			float angleAC = atan2(theta[2] - theta[0], phi[2] - phi[0]); 
+			//Calculate phi and theta between A and B and between A and C relative to A
+			float phiAB = atan2(y[1] - y[0], x[1] - x[0]);
+			float thetaAB = acos((z[1] - z[0])/sqrt(pow(x[1] - x[0], 2) + pow(y[1] - y[0], 2) + pow(z[1] - z[0], 2)));
+			float phiAC = atan2(y[2] - y[0], x[2] - x[0]);
+			float thetaAC = acos((z[2] - z[0])/sqrt(pow(x[2] - x[0], 2) + pow(y[2] - y[0], 2) + pow(z[2] - z[0], 2)));
 
-			float angleBA = atan2(theta[0] - theta[1], phi[0] - phi[1]); 
-			float angleBC = atan2(theta[2] - theta[1], phi[2] - phi[1]);	
+			//Treat these as 2D coordinates on the spherical plane. Determine angle and rotate 90 degrees to find parallel angle
+			float angle = atan2(thetaAB - thetaAC, phiAB - phiAC);
+			float radius = sqrt(pow(thetaAB - thetaAC, 2) + pow(phiAB - phiAC, 2));
 
-			float middleA = (angleAB + angleAC)/2;
-			float middleB = (angleBA + angleBC)/2;
-			
-									
-			
+			//Rotate angle 90 degrees
+			angle += PI/4;
+
+			//Calculate parallel phi and theta
+			float phiParallel = phiAB + radius * cos(angle);
+			float thetaParallel = thetaAB + radius * sin(angle);
+
+			//Assign values to vertex
+			vertex.phi = phiParallel;
+			vertex.theta = thetaParallel;
+
 	}
 
-	//Add average point
-	if (pointCount > 0) {
-		cX /= pointCount;
-		cY /= pointCount;
-		cZ /= pointCount;
-	}
-
+	centerX =  cX / objectPointCount;
+	centerY =  cY / objectPointCount;
+	centerZ =  cZ / objectPointCount;
 }
 
 //Rotate an object

@@ -128,6 +128,13 @@ void Player::handleMouse() {
 		thetaAngle = -PI/2;
 	}
 
+	//Wrap around phi value
+	if (phiAngle < 0) {
+		phiAngle = 2*PI;
+	} else if (phiAngle > 2*PI) {
+		phiAngle = 0;
+	}
+
 	//Reset mouse position
 	SDL_WarpMouseInWindow(screen->gWindow, screen->SCREEN_WIDTH/2, screen->SCREEN_HEIGHT/2);
 

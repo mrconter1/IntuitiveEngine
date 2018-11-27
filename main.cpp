@@ -77,23 +77,29 @@ int main( int argc, char* args[] )
 	
 	//Create scene instance with pointer to player instance as parameter
 	Scene scene(&player, &screen);
+	scene.drawDistance = 10;
 
 	//Draw random scene
 	srand (time(NULL));
 
-	int boxes = 1;
-	Object box[boxes][boxes][boxes];
+	int boxes = 250;
+	Object box[boxes][boxes];
 
 	for (int x = 0; x < boxes; x++) {
 		for (int y = 0; y < boxes; y++) {
-			for (int z = 0; z < boxes; z++) {
-				box[x][y][z] = CreateBox(1, 1, 1, 1);
-				box[x][y][z].setColor(200, 0, 0);	
-				scene.addObject(&box[x][y][z]);
-			}
+			float xPos = x;
+			float yPos = y;
+			float zPos = floor((4*sin(xPos/20) + 3*sin(xPos/5) + + 5*cos(xPos/50)) + (4*cos(yPos/15) + 3*cos(yPos/7) + 5*sin(yPos/55)));
+			box[x][y] = CreateBox(xPos, yPos, zPos, 1);
+			box[x][y].setColor(0, rand() % 50 + 150, 0);	
+			scene.addObject(&box[x][y]);
 		}
 	}
-	
+
+	player.x = ((float) boxes)/2;
+	player.y = ((float) boxes)/2;
+	player.z = -5;
+
 	//Start up SDL and create window
 	if(!screen.init())
 	{

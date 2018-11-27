@@ -52,6 +52,8 @@ class Object {
 		int solid;
 		int visible;
 		int cX, cY, cZ;
+		float centerX, centerY, centerZ;
+		int objectPointCount;
 
 	Object();
 
