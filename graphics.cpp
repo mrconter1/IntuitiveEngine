@@ -30,7 +30,7 @@ void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
 	int x[3];
 	int y[3];
 
-	//Outline triangle	
+		
 	int i = 0;
 	for (auto &point : pointList){
 		x[i] = point.screenX;
@@ -40,6 +40,7 @@ void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
 
 	if (!solid) {
 
+		//Outline triangle
 		SDL_Point points[4];
 		int i = 0;
 		for (auto &point : pointList){
@@ -76,45 +77,47 @@ void Triangle::drawLineTriangle(SDL_Renderer* gRenderer) {
 
 		float xA, yA, xB, yB;
 
-		int buffSize = 5000;
+		//Distance between C and A AND C and B
+		float distA = sqrt(pow(x[0] - x[1], 2) + pow(y[0] - y[1], 2));
+		float distB = sqrt(pow(x[0] - x[2], 2) + pow(y[0] - y[2], 2));
+
+		int buffSize = 7500;
 		SDL_Point linePoints[buffSize];
 		
-		float radius = 0.0f;	
+		float radiusA = 0.0f;	
+		float radiusB = 0.0f;	
+		float range = 1;
 		while (!doneA || !doneB) {
+
+			if (numOfPoints > buffSize) break;
 
 			//Calculate coordinates if job not done
 			if (!doneA) {
-				xA = radius * cAngleA + x[1];
-				yA = radius * sAngleA + y[1];
+				xA = radiusA * cAngleA + x[1];
+				yA = radiusA * sAngleA + y[1];
 
 				//If target is not reached, calculate coordinate and add to list
-				if (abs(xA  - x[0]) < 1 && abs(yA  - y[0]) < 1) {
+				if ((distA - radiusA) < range) {
 					doneA = 1;
 				} else {
-					linePoints[numOfPoints] = {(int) xA, (int) yA};
-					if (numOfPoints < buffSize) {
-						numOfPoints++;
-					}
+					linePoints[numOfPoints++] = {(int) xA, (int) yA};
+					radiusA += 0.5f;
 				}
 				
 			}
 
 			if (!doneB) {
-				xB = radius * cAngleB + x[2];
-				yB = radius * sAngleB + y[2];
+				xB = radiusB * cAngleB + x[2];
+				yB = radiusB * sAngleB + y[2];
 
 				//If target is not reached, calculate coordinate and add to list
-				if (abs(xB  - x[0]) < 1 && abs(yB  - y[0]) < 1) {
+				if ((distB - radiusB) < range) {
 					doneB = 1;
 				} else {
-					linePoints[numOfPoints] = {(int) xB, (int) yB};
-					if (numOfPoints < buffSize) {
-						numOfPoints++;
-					}
+					linePoints[numOfPoints++] = {(int) xB, (int) yB};
+					radiusB += 0.5f;
 				}
 			}
-
-			radius += 0.5f;
 
 		}
 
@@ -209,6 +212,20 @@ void Object::addVertex(std::initializer_list<float> pointA, std::initializer_lis
 	centerX =  cX / objectPointCount;
 	centerY =  cY / objectPointCount;
 	centerZ =  cZ / objectPointCount;
+
+	float maxDist = 0;
+	//Calculate maximum radius
+	for (auto &vertex : vertexList) {
+			//Three points for each vertex
+			std::list<Point> &pointList = vertex.pointList;
+			for (auto &point : pointList) {
+				float pointDist = sqrt(pow(centerX - point.x, 2) + pow(centerY - point.y, 2) + pow(centerZ - point.z, 2));
+				if (pointDist > maxDist) {
+					maxDist = pointDist;
+				}
+			}
+	}
+	
 }
 
 //Rotate an object

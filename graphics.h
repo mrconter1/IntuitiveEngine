@@ -53,6 +53,7 @@ class Object {
 		int visible;
 		int cX, cY, cZ;
 		float centerX, centerY, centerZ;
+		float maxRadius;
 		int objectPointCount;
 
 	Object();

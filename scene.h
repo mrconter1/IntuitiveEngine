@@ -38,6 +38,10 @@ class Scene {
 	float getAverageRenderTime(int numOfFrames);
 	//Returns distance between object and player
 	float getDistToPlayer(Object * inputObject);
+	//Return true if object is visible
+	int objectVisible(Object * inputObject);
+	//Returns 2D screen coordinates from 3D coordinates
+	
 };
 
 #endif

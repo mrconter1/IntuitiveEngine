@@ -19,9 +19,6 @@ Scene::Scene(Player * inputPlayer, Screen * inputScreen) {
 	renderTime = 0.0f;
 	collectAverageRenderTime = 0;
 	frameIndex = 0;
-	
-	//Render margin error used to only render things within view
-	renderMargin = 500;
 
 	//Only render objects inside drawing distance
 	drawDistance = 1000.0f;
@@ -60,12 +57,105 @@ void Scene::renderScene() {
 } 
 
 float Scene::getDistToPlayer(Object * inputObject) {
-	float dist = 10;
+	float dist = 5;
 	float x = player->x + dist * sin(player->thetaAngle) * cos(player->phiAngle);
 	float y = player->y + dist * sin(player->thetaAngle) * sin(player->phiAngle);
-	float z = player->z + dist * cos(player->thetaAngle);
+	float z = player->z + dist * cos(player->thetaAngle - PI/4);
 
 	return sqrt(pow(x - inputObject->centerX, 2) + pow(y - inputObject->centerY, 2) + pow(z - inputObject->centerZ, 2));
+}
+
+int Scene::objectVisible(Object * inputObject) {
+
+	int renderMargin = 600;
+	int objectRenderMargin = 0;
+	int pointsInside = 0;
+
+	//-----Calculate where center point of object is projected-----
+	float halfHFov = player->hFov/2;
+	float halfVFov = player->vFov/2;
+	float hFovTimesScreen_WIDTH = screen->SCREEN_WIDTH/player->hFov;
+	float vFovTimesScreen_HEIGHT = screen->SCREEN_HEIGHT/player->vFov;
+
+	//3D Point coordinates with object coordinates offset
+
+	float pointX = inputObject->centerX;
+	float pointY = inputObject->centerY;
+	float pointZ = inputObject->centerZ;		
+
+	//-----Camera ROTATION--------
+
+	//Calculate phi angle
+	//Calculate diff values for xy plane
+	float diffX = pointX - player->x;
+	float diffY = pointY - player->y;
+
+	//Radius
+	float r = sqrt(pow(diffX, 2) + pow(diffY, 2));
+
+	//Degrees
+	float phi = atan2(diffY, diffX);
+
+	//Add rotation
+	phi -= player->phiAngle;
+
+	//Rotate 
+	pointX = player->x + r * cos(phi);
+	pointY = r * sin(phi);
+	
+	//Calculate theta angle
+	//Calculate diff values for xy plane
+	diffX = pointX - player->x;
+	float diffZ = pointZ - player->z;
+
+	//New radius
+	r = sqrt(pow(diffX, 2) + pow(diffZ, 2));
+
+	//Degrees
+	float theta = atan2(diffX, diffZ);
+
+	//Add rotation
+	theta += player->thetaAngle;
+
+	//Rotate 
+	pointX = r * sin(theta);
+	pointZ = r * cos(theta);
+
+	//-----END Camera ROTATION----
+
+	float xFovPos = 0.0f;
+	float yFovPos = 0.0f;
+	//Project point
+	if (pointX != 0) {
+		xFovPos = atan2(pointY, pointX);
+		yFovPos = atan2(pointZ, pointX);
+	}
+	int screenPosX = (xFovPos + halfHFov)*hFovTimesScreen_WIDTH;
+	int screenPosY = (yFovPos + halfVFov)*vFovTimesScreen_HEIGHT;
+
+	//Calculate maximum width of object on screen using objects maximum radius
+	float distToObject = sqrt(pow(player->x - inputObject->centerX, 2) + pow(player->y - inputObject->centerY, 2) + pow(player->z - inputObject->centerZ, 2));
+	float objectRadius = inputObject->maxRadius + objectRenderMargin;
+
+	float angleWidth = atan(objectRadius/distToObject);
+	float screenRadius = (angleWidth/std::max(player->hFov, player->vFov))*std::max(screen->SCREEN_WIDTH, screen->SCREEN_HEIGHT);
+
+	//Check circle enveloping object is inside view
+	for (float angle = 0.0f; angle < 2*PI; angle += PI/2) {
+		int screenX = screenPosX + (screenRadius * cos(angle));
+		int screenY = screenPosY + (screenRadius * sin(angle));
+		//Checks if point is inside view
+		if ((screenX >= (-renderMargin) && 
+			screenX < (screen->SCREEN_WIDTH + renderMargin)) && 
+			(screenY >= (-renderMargin) && 
+			screenY < (screen->SCREEN_HEIGHT + renderMargin))) {
+
+			return 1;
+		}	
+	}
+
+	return 0;
+
 }
 
 //Returns a list with 2d vertex's to render
@@ -80,11 +170,13 @@ std::list<Triangle> Scene::renderQueue() {
 	std::list<Triangle> triangles;
 	//Iterate through all objects in scene
 	for (auto * object : objectList) {
+		//Skip object if not visible
+		if (!objectVisible(object)) {
+			continue;
+		}
 		//Set object invisible if outside drawing distance
-		if (getDistToPlayer(object) <= drawDistance) {
-			object->visible = 1;
-		} else {
-			object->visible = 0;
+		if (getDistToPlayer(object) > drawDistance) {
+			continue;
 		}
 		//Skip object if not visible
 		if (!object->visible) {
@@ -102,7 +194,7 @@ std::list<Triangle> Scene::renderQueue() {
 			//Variable to hold 2d triangle
 			Triangle triangle;
 			//Is inside view
-			int pointsInsideView = 0;
+			int pointsInside = 0;
 
 			for (auto &point : pointList) {
 
@@ -129,12 +221,11 @@ std::list<Triangle> Scene::renderQueue() {
 				phi -= player->phiAngle;
 
 				//Rotate 
-				pointX = player->x + r * cos(phi);
-				pointY = player->y + r * sin(phi);
+				pointY = r * sin(phi);
 				
 				//Calculate theta angle
 				//Calculate diff values for xy plane
-				diffX = pointX - player->x;
+				diffX = r * cos(phi);
 				float diffZ = pointZ - player->z;
 
 				//New radius
@@ -147,24 +238,19 @@ std::list<Triangle> Scene::renderQueue() {
 				theta += player->thetaAngle;
 
 				//Rotate 
-				pointX = player->x + r * sin(theta);
-				pointZ = player->z + r * cos(theta);
+				pointX = r * sin(theta);
+				pointZ = r * cos(theta);
 
 				//-----END Camera ROTATION----
-				
-				//Calculate distances
-				float xDist = pointX - player->x;
-				float yDist = pointY - player->y;
-				float zDist = pointZ - player->z;
 
-				distAvg += pow(xDist, 2) + pow(yDist, 2) + pow(zDist, 2);
+				distAvg += pow(pointX, 2) + pow(pointY, 2) + pow(pointZ, 2);
 
 				float xFovPos = 0.0f;
 				float yFovPos = 0.0f;
 				//Project point
-				if (xDist != 0) {
-					xFovPos = atan2(yDist, xDist);
-					yFovPos = atan2(zDist, xDist);
+				if (pointX != 0) {
+					xFovPos = atan2(pointY, pointX);
+					yFovPos = atan2(pointZ, pointX);
 				}
 				int screenPosX = (xFovPos + halfHFov)*hFovTimesScreen_WIDTH;
 				int screenPosY = (yFovPos + halfVFov)*vFovTimesScreen_HEIGHT;
@@ -172,19 +258,20 @@ std::list<Triangle> Scene::renderQueue() {
 				triangle.addPoint(screenPosX, screenPosY);				
 
 				//Checks if point is inside view
-				if ((screenPosX >= (-renderMargin) && 
-					screenPosX < (screen->SCREEN_WIDTH + renderMargin)) && 
-					(screenPosY >= (-renderMargin) && 
-					screenPosY < (screen->SCREEN_HEIGHT + renderMargin))) {
+				if (	!pointsInside &&
+					screenPosX >= 0 && 
+					screenPosX < screen->SCREEN_WIDTH && 
+					screenPosY >= 0 && 
+					screenPosY < screen->SCREEN_HEIGHT) {
 
-					pointsInsideView++;
+					pointsInside = 1;
 
 				}	
 
 			}
 
 			//If whole triangle is visible
-			if (pointsInsideView == 3) {
+			if (pointsInside > 0) {
 
 				float modVal = PI/4;
 				//Alternative 2 as a function of triangle angle
@@ -220,6 +307,7 @@ std::list<Triangle> Scene::renderQueue() {
 
 		}
 	}
+
 	return triangles;
 }
 
