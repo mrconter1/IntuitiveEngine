@@ -1,5 +1,12 @@
 # IntuitiveEngine
-A primitive 3D engine made from the ground up using only a 2D drawLineToScreen function. It can at the moment project around 10 000 points to the screen using the CPU at 60 FPS.
+
+Imagine yourself being stranded on an deserted island. Your only means of computing is a computer capabale of compile C++ and a single function that is capable of drawing a line between two points on the screen. What do you do if you want to play Minecraft?
+
+## Quick Description 
+
+This primitive 3D engine made from the ground up using only a 2D drawLineToScreen function and native C++. It can at the moment project around 10 000 points to the screen using the CPU at 60 FPS. This engine was created using almost only my own intuation on 3D projection. A simple function filling a triangle took a couple of days and I later learned that this is a very studied problem in computer graphics.
+
+## Features
 
 - [x] Correct XYZ movement
 - [x] Smooth Mouse input
