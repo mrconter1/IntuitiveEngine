@@ -26,6 +26,8 @@ This primitive 3D engine made from the ground up using only a 2D drawLineToScree
 - [x] Only render things approximately inside view
 - [x] Optimize Rendering
 
+## Demonstration
+
 ![](peek.gif)
 
 Command used to run project:
