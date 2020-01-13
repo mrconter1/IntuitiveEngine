@@ -4,7 +4,7 @@ Imagine yourself being stranded on an deserted island. Your only means of comput
 
 ## Quick Description 
 
-This primitive 3D engine made from the ground up using only a 2D drawLineToScreen function and native C++. It can at the moment project around 10 000 points to the screen using the CPU at 60 FPS. This engine was created using almost only my own intuation on 3D projection. A simple function filling a triangle took a couple of days and I later learned that this is a very studied problem in computer graphics.
+This primitive 3D engine made from the ground up using only a 2D drawLineToScreen function and native C++. It can at the moment project around 10 000 points to the screen using the CPU at 60 FPS. This engine was created using almost only my own intuation on 3D projection. A simple function filling a triangle took a couple of days and I later learned that this is a very studied problem in computer graphics. It would have been preferable to use a even more primitive function that just drew a single pixel but that was not possible due to performance issues. But using a setPixel function would only require one to implement the drawLineOnScreen which would be trivial.
 
 ## Features
 
