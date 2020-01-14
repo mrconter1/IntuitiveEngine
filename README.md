@@ -1,6 +1,6 @@
 # IntuitiveEngine
 
-Imagine yourself being stranded on a deserted island. Your only means of computing is a computer capable of compile C++ and a single function that is capable of drawing a line between two points on the screen. What do you do if you want to play Minecraft?
+Imagine yourself being stranded on a deserted island. Your only means of computing is a computer capable of compiling C++ and a single function that is capable of drawing a line between two points on the screen. What do you do if you want to play Minecraft?
 
 ## Quick Description 
 
